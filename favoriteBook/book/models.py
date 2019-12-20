@@ -16,7 +16,7 @@ class RecommendedBook(models.Model):
 
 class comment(models.Model):
     target = models.ForeignKey(RecommendedBook, on_delete=models.CASCADE,default="")
-    title = models.CharField(max_length=100, default="名無し")
+    handlename = models.CharField(max_length=100, default="名無し")
     content = models.CharField(max_length=300)
     created_at = models.DateTimeField(auto_now_add=True)
 
