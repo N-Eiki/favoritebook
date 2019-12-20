@@ -27,7 +27,14 @@
         </ul>
     </div>
 </div>
-
+{% else %}
+<div class="menu-container">
+    <div class="alert alert-dark menu-list" role="alert">
+        <ul>
+            <li><a href="{% url 'login' %}">login</a></li>
+            <li><a href="{% url 'signup' %}">signup</a></li>
+        </ul>
+    </div>
 {% endif %}
 
 {% block header %}

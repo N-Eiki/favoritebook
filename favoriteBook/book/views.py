@@ -41,7 +41,7 @@ def logoutfunc(request):
     return redirect(to="login")
 
 
-@login_required
+# @login_required
 def homefunc(request):
     object_list = RecommendedBook.objects.all()
     tags=[]
@@ -91,8 +91,6 @@ def detailfunc(request, pk):
             comment = form.save(commit=False)
             comment.target = get_object_or_404(RecommendedBook, pk=pk)
             comment.save()
-#             return render()
-
 
     print("this is a not post mehtod")
     form=CommentCreateForm()
@@ -103,20 +101,6 @@ def detailfunc(request, pk):
     }
     return render(request, "detail.html", params)
 
-
-# def message(request,page=1):
-#     if(request.method=='POST'):
-#         obj=Message()
-#         form=MessageForm(request.POST, instance=obj)
-#         form.save()
-#     data=Message.objects.all().reverse()
-#     paginator=Paginator(data,5)
-#     params={
-#         'title':'Message',
-#         'form':MessageForm(),
-#         "data":paginator.get_page(page),
-#     }
-#     return render(request, 'hello/message.html',params)
 
 
 def goodfunc(request, pk):

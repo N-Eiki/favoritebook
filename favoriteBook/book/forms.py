@@ -15,4 +15,4 @@ class FindForm(forms.Form):
 class CommentCreateForm(forms.ModelForm):
     class Meta:
         model=comment
-        fields=('content',)
+        fields=('handlename',"content")
