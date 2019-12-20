@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{%block header%}
+<div class="alert alert-primary" role="alert">
+    {{object.author}}さんによる[{{object.bookTitle}}]の紹介ページです。
+</div>
+{%endblock header%}
+<hr>
+
+{% block additionalFunc %}
+{% endblock additionalFunc %}
+<hr>
+
+{% block content %}
+<div class="container">
+    <div class="alert alert-success" role="alert">
+        <p>{{object.author}}</p>
+        <p>{{object.bookTitle}}</p>
+        <p><img src="{{object.bookImage.url}}" alt="image" width="200"></p>
+        <p>{{object.content}}</p>
+<!--        <p><a href="{{object.bookLink}}">{{object.LinkTitle}}</a></p>-->
+        <a href="#">タグ変更　</a>/<a href="#">　タグ追加</a>：
+        <p>{{object.genre}}</p>
+    </div>
+    <a href="{% url 'good' object.pk %}" class="btn btn-primary" role="button" aria-pressed="true">高評価x{{object.good}}</a>
+    <a href="{% url 'notGood' object.pk %}" class="btn btn-danger" role="button" aria-pressed="true">低評価x{{object.notGood}}</a>
+
+</div>
+
+
+<hr>
+
+<div class="alert alert-dark container" role="alert">
+    <form action="{% url 'detail' object.pk %}" method="POST">{% csrf_token %}
+        {{ form }}
+        <button type="submit">送信</button>
+    </form>
+</div>
+
+{% for comment in object.comment_set.all %}
+
+<div class="alert-secondary container" role="alert">
+    <h5>{{comment.title}}</h5>
+    <p>{{comment.content}}</p>
+</div>
+{% endfor %}
+
+
+{% endblock content %}

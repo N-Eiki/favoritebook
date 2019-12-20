@@ -1,0 +1,35 @@
+.menu-container>div>ul{
+    margin: 0px;
+    padding: 0px;
+}
+
+.menu-container > div > ul > li {
+    list-style: None;
+    float: left;
+    margin-left: 25px;
+}
+
+.menu-container > div > ul > li {
+    font-size: 25px;
+}
+
+.menu-list {
+    /*margin-top: 40px;*/
+    padding-bottom: 40px;
+}
+
+
+.jumbotron-fluid{
+    padding-bottom: 0px;
+}
+
+.booklist{
+    width: 31%;
+    margin:0px 10px;
+    float:left;
+}
+
+
+#detailedExplanation {
+    font-size: 30%;
+}

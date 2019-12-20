@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{%block header%}
+<div class="alert alert-success container" role="alert">
+    あなたのおすすめを共有しましょう！
+</div>
+{%endblock header%}
+
+{% block content %}
+<div  class="container">
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>本のタイトル：<input type="text" name="bookTitle"></p>
+        <p>内容: <input type="text" name="content"></p>
+        <p>イメージ: <input type="file" name="bookImage"></p>
+        <p>ジャンル： <input type="text" name="genre"></p>
+        <input type="hidden" name="author" value="{{user.username}}">
+        <hr>
+        <input type="submit" value="決定！">
+    </form>
+    <hr>
+</div>
+{% endblock content %}
