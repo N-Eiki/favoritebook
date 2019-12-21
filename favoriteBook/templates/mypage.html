@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load boost %}
+
+{% block customCSS %}
+{% endblock customCSS %}
+
+
+{%block header%}
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">あなたが投稿した本です</h1>
+        <p class="lead">もっとたくさんの本を紹介しませんか？ <a href="{% url 'create' %}">紹介する</a></p>
+    </div>
+</div>
+{%endblock header%}
+
+
+{% block content %}
+{% for object,tag in object_list|zip:tags %}
+
+<div class="containe booklist list_number_{{item.pk}}">
+    <div class="alert alert-primary" role="alert">
+        <p>{{object.author}}</p>
+        <p>{{object.bookTitle}}</p>
+        <p><img src="{{object.bookImage.url}}" alt="image" width="200" height="250"></p>
+        <p>タグ：
+            {% for item in tag %}
+            <a href="#">{{item}}</a>
+            {% endfor %}
+        </p>
+        <p><a href="{% url 'detail' object.pk %}">詳細へ</a></p>
+        <a href=#" class="btn btn-primary  " role="button" aria-pressed="true">高評価x{{object.good}}</a>
+        <a href="#" class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true" >低評価x{{object.notGood}} </a>
+        <p id="detailedExplanation">※「高評価・ 低評価・タグの変更」は「詳細へ」 から行えます</p>
+
+    </div>
+</div>
+{% endfor %}
+{% endblock content %}

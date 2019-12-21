@@ -6,7 +6,7 @@
 .menu-container > div > ul > li {
     list-style: None;
     float: left;
-    margin-left: 25px;
+    margin-left: 5%;
 }
 
 .menu-container > div > ul > li {
@@ -32,4 +32,9 @@
 
 #detailedExplanation {
     font-size: 30%;
+}
+
+
+#signin,#login {
+    color: red;
 }

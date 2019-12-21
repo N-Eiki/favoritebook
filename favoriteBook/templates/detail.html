@@ -1,14 +1,11 @@
 {% extends 'base.html' %}
 
 {%block header%}
+
 <div class="alert alert-primary" role="alert">
     {{object.author}}さんによる[{{object.bookTitle}}]の紹介ページです。
 </div>
 {%endblock header%}
-<hr>
-
-{% block additionalFunc %}
-{% endblock additionalFunc %}
 <hr>
 
 {% block content %}
@@ -18,13 +15,15 @@
         <p>{{object.bookTitle}}</p>
         <p><img src="{{object.bookImage.url}}" alt="image" width="200"></p>
         <p>{{object.content}}</p>
-<!--        <p><a href="{{object.bookLink}}">{{object.LinkTitle}}</a></p>-->
         <a href="#">タグ変更　</a>/<a href="#">　タグ追加</a>：
         <p>{{object.genre}}</p>
     </div>
     <a href="{% url 'good' object.pk %}" class="btn btn-primary" role="button" aria-pressed="true">高評価x{{object.good}}</a>
     <a href="{% url 'notGood' object.pk %}" class="btn btn-danger" role="button" aria-pressed="true">低評価x{{object.notGood}}</a>
-
+    {% if　not user.is_authenticated %}
+        <p>評価するためには <a href="{% url 'login' %}">ログイン</a> が必要です</p>
+        <p>今、評価ボタンを押すとログイン画面に移動します</p>
+    {% endif%}
 </div>
 
 
@@ -37,13 +36,49 @@
     </form>
 </div>
 
-{% for comment in object.comment_set.all reversed %}
+<div class="alert alert-dark container" role="alert">
+    <form action="{% url 'detail' object.pk %}" method="POST">{% csrf_token %}
+        {{reverseform}}
+        <button type="submit">表示順変更</button>
+    </form>
+</div>
 
+
+
+
+
+{% if sort %}
+{% for comment in object.comment_set.all reversed %}
 <div class="alert-secondary container" role="alert">
-    <h5>{{comment.handlename}}</h5>
-    <p>{{comment.content}}</p>
+    <p>投稿日:{{comment.created_at}}</p>
+    <h5>ハンドルネーム：{{comment.handlename}}</h5>
+    <p>コメント：{{comment.content}}</p>
 </div>
 {% endfor %}
-
+{% else %}
+{% for comment in object.comment_set.all %}
+<div class="alert-secondary container" role="alert">
+    <p>投稿日:{{comment.created_at}}</p>
+    <h5>ハンドルネーム：{{comment.handlename}}</h5>
+    <p>コメント：{{comment.content}}</p>
+</div>
+{% endfor %}
+{%endif%}
 
 {% endblock content %}
+
+
+{% block customeJS %}
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>-->
+<script type="text/javascript">
+    function reverse(click) {
+        if(click=="True"){
+            click="False";
+        } else {
+            click="True";
+        }
+        console.log(click);
+        return click;
+    }
+</script>
+{% endblock %}

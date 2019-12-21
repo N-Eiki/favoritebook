@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib.auth import logout
-from .forms import FindForm,CommentCreateForm
+from .forms import FindForm,CommentCreateForm,RadioForm
 
 
 
@@ -47,7 +47,7 @@ def homefunc(request):
     tags=[]
     for item in object_list:
         tags.append(item.genre.split())
-        print(item.genre)
+#         print(item.genre)
 #     print("they are tags")
 #     print(tags)
 #     for i in range(len(tags)):
@@ -71,8 +71,7 @@ def findfunc(request):
     if (request.method=="POST"):
         form = FindForm()
         str = request.POST['find']
-        print(str)
-        data = RecommendedBook.objects.filter(genre=str)
+        data = RecommendedBook.objects.filter(genre__contains=str)
     else:
         form=FindForm()
         data = RecommendedBook.objects.all()
@@ -84,25 +83,40 @@ def findfunc(request):
 
 
 def detailfunc(request, pk):
+    sort=True
     if request.method=="POST":
-        print("this is a post method")
         form = CommentCreateForm(request.POST)
+        print(request.POST)
+        reverseform=RadioForm(request.POST)
+#         print(request.POST.get("select"))
+        selectNum=request.POST.get('select')
         if form.is_valid():
             comment = form.save(commit=False)
             comment.target = get_object_or_404(RecommendedBook, pk=pk)
             comment.save()
-
-    print("this is a not post mehtod")
+        if selectNum=="1":
+            sort=False#新しいコメントを上に
+        else:
+            sort=True#古いコメントを上に
+    reverseform=RadioForm()
     form=CommentCreateForm()
     object = RecommendedBook.objects.get(pk=pk)
+#     print(sort)
+#     if(sort):
+#         print("新しい順")
+#     else:
+#         print('古い順')
+
     params = {
         'object':object,
         "form":form,
+        "reverseform":reverseform,
+        "sort":sort
     }
     return render(request, "detail.html", params)
 
 
-
+@login_required
 def goodfunc(request, pk):
     posted = RecommendedBook.objects.get(pk=pk)
     post = request.user.get_username()
@@ -113,6 +127,7 @@ def goodfunc(request, pk):
     posted.save()
     return redirect(to="home")
 
+@login_required
 def notGoodfunc(request, pk):
     posted = RecommendedBook.objects.get(pk=pk)
     post = request.user.get_username()
@@ -123,27 +138,26 @@ def notGoodfunc(request, pk):
     posted.save()
     return redirect(to="home")
 
-# def addGenre(request,pk):  //reqとpkを受け取る
-#     posted = RecommendedBook.objects.get(pk=pk) //pkのidをもつpostを取得
-#     post = request.POST['genre']//postにより受け取ったものを取得
-#     if post in posted.genre://postがすでにある場合
-#         return render(return,'addGenre.html',{"message":"this is already set"})//エラーを返す
-#     posted.genre=posted.genre+" "+post//追加
-#     posted.save()//保存
-#あとあとリスト化して出力したいのでhomeで色々変更あり
-#     return  redirect(to="home")
+@login_required
+def mypagefunc(request):
+    user = request.user
+    print(RecommendedBook.objects)
+    object_list = RecommendedBook.objects.filter(author=user)
+    tags=[]
+    for item in object_list:
+        tags.append(item.genre.split())
+        ###
+#     data=RecommendedBook.objects.all()
+#     for item in data:
+#         print("author:", item.genre)
+        ###
+    return render(request, 'mypage.html',{"object_list":object_list , "tags":tags})
 
-
-# @require_POST
-# def create_comment(request, pk):
-#     form = CommentCreateForm(request.POST)
-#     if form.is_valid():
-#         comment = form.save(commit=False)
-#         comment.target = get_object_or_404(comment,pk=pk)
-#         comment.save()
-#         return redirect(to="home")
-#     params = {
-#         'object':RecommendedBook.objects.get(pk=pk),
-#         'form':form,
+# def findByGenresfunc(request,item):
+#     objects_list = RecommendedBook.objects.all()
+#
+#     params{
+#         'data':data,
+#         "form":FindForm()
 #     }
-#     return render(request, "detail.html", params)
+#     return render(request, "find.html",params)

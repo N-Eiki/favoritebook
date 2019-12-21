@@ -7,6 +7,7 @@
 {% endblock header %}
 
 {% block additionalFunc %}
+{% with item="" %}
 <table>
     <form action="{% url 'find' %}" method="POST">
         {% csrf_token %}
@@ -14,6 +15,7 @@
         <tr><th></th><th><input type="submit" value="決定"></th></tr>
     </form>
 </table>
+{% endwith %}
 {% endblock additionalFunc %}
 
 <hr>
