@@ -19,8 +19,3 @@ class comment(models.Model):
     handlename = models.CharField(max_length=100, default="名無し")
     content = models.CharField(max_length=300)
     created_at = models.DateTimeField(auto_now_add=True)
-
-# class SubComment(models.Model):
-#     text = models.CharField('コメント', max_length=300)
-#     target = models.ForeignKey(Comment, on_delete=models.CASCADE, verbose_name="紐づくコメント")
-#     created_at = models.DateTimeField(auto_now_add=True)

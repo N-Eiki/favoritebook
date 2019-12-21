@@ -13,7 +13,8 @@ urlpatterns = [
     path('good/<int:pk>', views.goodfunc, name="good"),
     path('notGood/<int:pk>', views.notGoodfunc, name="notGood"),
     path('create/', views.dataCreate.as_view() , name="create"),
-#     path('detail/<int:pk>',views.create_comment,name="create_comment"),
+    path('mypage/', views.mypagefunc, name="mypage"),
+#     path('find/<str:item>', views.findByGenresfunc, name="findgenre")
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
