@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import RecommendedBook#,Comment
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DeleteView
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib.auth import logout
-from .forms import FindForm,CommentCreateForm,RadioForm
+from .forms import FindForm,CommentCreateForm,RadioForm,newTagForm
+from django.db.models import Q
 
 
 
@@ -21,8 +22,10 @@ def signupfunc(request):
             return render(request, "signup.html",{"error":"this user is already registered","error2":"please register another name"})
         except:
             user = User.objects.create_user(username, "", password)
-            return render(request,"signup.html",{'title':'signup'})
+            return redirect(to="login")
+#             return render(request,"signup.html",{'title':'signup'})
     return render(request, "signup.html", {'title':"signup"})
+
 
 def loginfunc(request):
     if request.method=="POST":
@@ -34,7 +37,7 @@ def loginfunc(request):
             return redirect(to="home")
         else:
             return redirect(to="login")
-    return render(request, "login.html")
+    return render(request, "login.html",{"title":"login"})
 
 def logoutfunc(request):
     logout(request)
@@ -45,15 +48,26 @@ def logoutfunc(request):
 def homefunc(request):
     object_list = RecommendedBook.objects.all()
     tags=[]
-    for item in object_list:
-        tags.append(item.genre.split())
-#         print(item.genre)
-#     print("they are tags")
-#     print(tags)
-#     for i in range(len(tags)):
-#         for item in tags[i]:
-#             print(item)
-#         print("//////////")
+    for object in object_list:
+        object_item=[]
+        taglong=""
+        items = object.genre.split()
+#         print("items",items)
+        for item in items:
+            taglong+=item
+            object_item.append(item)
+            if len(taglong)>15:
+                if len(taglong)>20:
+                    over_item=object_item.pop()
+                    over_str = len(taglong)-20
+#                     print(over_str)
+#                     print("over",over_item[0:len(over_item)-over_str])
+                    object_item.append(over_item[0:len(over_item)-over_str]+"...")
+
+                object_item.append("...")
+                break
+        tags.append(object_item)
+#
     return render(request, 'home.html',{'title':'home', 'object_list':object_list,'tags':tags})
 
 
@@ -66,18 +80,64 @@ class dataCreate(CreateView):
     fields=('author','bookTitle',"content","bookImage","genre")
     success_url = reverse_lazy('home')
 
-
 def findfunc(request):
+    selecttags=[]
+    aboutTags=[]
+    all=RecommendedBook.objects.all()
+    for words in all:
+        aboutTags.append(words.genre)
+        for word in words.genre.split():
+            if word not in selecttags:
+                selecttags.append(word)
+
     if (request.method=="POST"):
-        form = FindForm()
-        str = request.POST['find']
-        data = RecommendedBook.objects.filter(genre__contains=str)
+        try:
+            str = request.POST['find']
+            data = RecommendedBook.objects.filter(genre__contains=str)
+            form = FindForm(request.POST)
+
+        except:
+            checks_value = request.POST.getlist('chekcs[]')
+            checked_tags=[]
+            for tag in aboutTags:
+                for i in range(len(checks_value)):
+                    if checks_value[i] in tag:
+                        checked_tags.append(tag)
+            checked_tags=set(checked_tags)
+            data = RecommendedBook.objects.filter(genre__in=checked_tags)
+            form = FindForm()
+        if len(data)==0:
+            data=0
     else:
         form=FindForm()
         data = RecommendedBook.objects.all()
+    all=data
+    tags=[]
+    for object in all:
+        object_item=[]
+        taglong=""
+        items = object.genre.split()
+        for item in items:
+            taglong+=item
+            object_item.append(item)
+            if len(taglong)>15:
+                if len(taglong)>20:
+                    over_item=object_item.pop()
+                    over_str = len(taglong)-20
+#                     print(over_str)
+#                     print("over",over_item[0:len(over_item)-over_str])
+                    object_item.append(over_item[0:len(over_item)-over_str]+"...")
+
+                object_item.append("...")
+                break
+        tags.append(object_item)
+
     params = {
         'form':form,
         'data':data,
+        "selecttags":selecttags,
+        "tags":tags,
+        "title":"find",
     }
     return render(request,'find.html',params)
 
@@ -86,9 +146,8 @@ def detailfunc(request, pk):
     sort=True
     if request.method=="POST":
         form = CommentCreateForm(request.POST)
-        print(request.POST)
+#         print(request.POST)
         reverseform=RadioForm(request.POST)
-#         print(request.POST.get("select"))
         selectNum=request.POST.get('select')
         if form.is_valid():
             comment = form.save(commit=False)
@@ -101,17 +160,11 @@ def detailfunc(request, pk):
     reverseform=RadioForm()
     form=CommentCreateForm()
     object = RecommendedBook.objects.get(pk=pk)
-#     print(sort)
-#     if(sort):
-#         print("新しい順")
-#     else:
-#         print('古い順')
-
     params = {
         'object':object,
         "form":form,
         "reverseform":reverseform,
-        "sort":sort
+        "sort":sort,
     }
     return render(request, "detail.html", params)
 
@@ -141,23 +194,61 @@ def notGoodfunc(request, pk):
 @login_required
 def mypagefunc(request):
     user = request.user
-    print(RecommendedBook.objects)
+#     print(RecommendedBook.objects)
     object_list = RecommendedBook.objects.filter(author=user)
     tags=[]
-    for item in object_list:
-        tags.append(item.genre.split())
-        ###
-#     data=RecommendedBook.objects.all()
-#     for item in data:
-#         print("author:", item.genre)
-        ###
-    return render(request, 'mypage.html',{"object_list":object_list , "tags":tags})
+    for object in object_list:
+            object_item=[]
+            taglong=""
+            items = object.genre.split()
+#             print("items",items)
+            for item in items:
+                taglong+=item
+                object_item.append(item)
+                if len(taglong)>15:
+                    if len(taglong)>20:
+                        over_item=object_item.pop()
+                        over_str = len(taglong)-20
+#                         print(over_str)
+#                         print("over",over_item[0:len(over_item)-over_str])
+                        object_item.append(over_item[0:len(over_item)-over_str]+"...")
+                    else:
+                        object_item.append("...")
+                    break
+            tags.append(object_item)
+    params={
+    "object_list":object_list ,
+     "tags":tags,
+     "title":"mypage",
+     }
+    return render(request, 'mypage.html',params)
 
-# def findByGenresfunc(request,item):
-#     objects_list = RecommendedBook.objects.all()
-#
-#     params{
-#         'data':data,
-#         "form":FindForm()
-#     }
-#     return render(request, "find.html",params)
+
+
+@login_required
+def changeTagfunc(request, pk):
+    object = RecommendedBook.objects.get(pk=pk)
+    tags = object.genre.split()
+    if request.method=="POST":
+        deletetag=request.POST["tag1"].strip()
+        newtag=request.POST['tag2']
+#         print(deletetag)
+#         print(newtag)
+        if (deletetag!="")and(deletetag in object.genre):
+            object.genre = object.genre.replace(deletetag+" ","")
+            object.save()
+
+        object.genre += " "+newtag
+        object.save()
+        return redirect(to="home")
+#     print("全オブジェクト：",object.genre)
+    params = {
+        "form":newTagForm,
+        "tags":tags,
+    }
+    return render(request, "changeTag.html", params)
+
+
+class dataDelete(DeleteView):
+    model=RecommendedBook
+    success_url=reverse_lazy('mypage')

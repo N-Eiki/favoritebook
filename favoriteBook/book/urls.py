@@ -14,7 +14,8 @@ urlpatterns = [
     path('notGood/<int:pk>', views.notGoodfunc, name="notGood"),
     path('create/', views.dataCreate.as_view() , name="create"),
     path('mypage/', views.mypagefunc, name="mypage"),
-#     path('find/<str:item>', views.findByGenresfunc, name="findgenre")
+    path('delete/<int:pk>', views.dataDelete.as_view(), name="delete"),
+    path("changeTag/<int:pk>", views.changeTagfunc, name="changeTag"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 

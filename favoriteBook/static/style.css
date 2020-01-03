@@ -1,3 +1,10 @@
+.menu-container {
+    width: 100%;
+    background-color: rgb(255,255,255);
+    /*position: fixed;　*/    /*非ログイン時にスクロールできなくなった*/
+    /*z-index: 5;*/
+}
+
 .menu-container>div>ul{
     margin: 0px;
     padding: 0px;
@@ -6,7 +13,9 @@
 .menu-container > div > ul > li {
     list-style: None;
     float: left;
-    margin-left: 5%;
+    margin-left: 2px;
+    padding-top: 3px;
+
 }
 
 .menu-container > div > ul > li {
@@ -15,9 +24,8 @@
 
 .menu-list {
     /*margin-top: 40px;*/
-    padding-bottom: 40px;
+    padding-bottom: 60px;
 }
-
 
 .jumbotron-fluid{
     padding-bottom: 0px;
@@ -31,10 +39,42 @@
 
 
 #detailedExplanation {
-    font-size: 30%;
+    font-size: 70%;
 }
 
 
-#signin,#login {
+#signup,#login {
     color: red;
+}
+
+.header-menu {
+    cursor: pointer;
+    background-color: #6BCBCA;
+}
+/**/
+.header-menu>a{
+    color: white;
+}
+
+
+.header-menu>a:hover {
+    color: #6BCBCA;
+}
+
+.welcomeMessage {
+    /*margin-top: 10px;*/
+    margin:10px;
+    margin-bottom: 0px;
+}
+
+.image-size {
+    width: 200px;
+    height: 250px;
+    margin-bottom: 120px;
+}
+
+
+.delete-modal-button{
+    margin-bottom: 20px;
+    margin-left: 10px;
 }

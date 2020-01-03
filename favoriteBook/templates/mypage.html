@@ -1,39 +1,106 @@
 {% extends 'base.html' %}
 {% load boost %}
 
-{% block customCSS %}
-{% endblock customCSS %}
+{% block title %}
+<title>{{title}}</title>
+{% endblock title %}
+
 
 
 {%block header%}
 <div class="jumbotron jumbotron-fluid">
     <div class="container">
-        <h1 class="display-4">あなたが投稿した本です</h1>
+        <h1 class="display-4">あなたが投稿した本の一覧です</h1>
         <p class="lead">もっとたくさんの本を紹介しませんか？ <a href="{% url 'create' %}">紹介する</a></p>
     </div>
+</div>
+
+<div class="alert alert-light" role="alert">
+    <h1>マイページ</h1>
 </div>
 {%endblock header%}
 
 
 {% block content %}
+
+{% if object_list == 0 %}
+
+<div class="alert alert-danger container" role="alert" id="delete-cancel-field">
+    <div class="container">
+        <h1 class="display-4">あなたはまだ本を紹介していません</h1>
+        <p class="lead"> 初めての本を紹介しませんか？ <a href="{% url 'create' %}">紹介する</a></p>
+    </div>
+</div>
+
+{% else %}
+
 {% for object,tag in object_list|zip:tags %}
 
-<div class="containe booklist list_number_{{item.pk}}">
+<div class="container booklist list_number_{{item.pk}}">
     <div class="alert alert-primary" role="alert">
         <p>{{object.author}}</p>
         <p>{{object.bookTitle}}</p>
-        <p><img src="{{object.bookImage.url}}" alt="image" width="200" height="250"></p>
+        <p><img  class="image-size" src="{{object.bookImage.url}}" alt="image"></p>
         <p>タグ：
+
             {% for item in tag %}
-            <a href="#">{{item}}</a>
-            {% endfor %}
+                <a href="#">{{item}}</a>
+                {% endfor %}
+
         </p>
         <p><a href="{% url 'detail' object.pk %}">詳細へ</a></p>
         <a href=#" class="btn btn-primary  " role="button" aria-pressed="true">高評価x{{object.good}}</a>
         <a href="#" class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true" >低評価x{{object.notGood}} </a>
         <p id="detailedExplanation">※「高評価・ 低評価・タグの変更」は「詳細へ」 から行えます</p>
-
+        <p>
+            <div class="columns is-1">
+                <button type="button" class="button is-danger delete-modal-button" data-deleteurl="{% url 'delete' object.pk %}">削除</button>
+            </div>
+        </p>
     </div>
 </div>
 {% endfor %}
+{% endif %}
+
+<div class="modal" id="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">確認</p>
+        </header>
+        <section class="modal-card-body">
+            本当に削除してよろしいですか。
+        </section>
+        <footer class="modal-card-foot">
+            <form action="" method="POST" id="delete-form">
+                {% csrf_token %}
+                <button type="button" class="button is-info" id="delete-cancel-button">キャンセル</button>
+                <button type="submit" class="button is-danger">本当に削除</button>
+            </form>
+        </footer>
+    </div>
+</div>
 {% endblock content %}
+
+{% block customJS %}
+<script>
+    const deleteForm = document.getElementById('delete-form');
+    const modal = document.getElementById('modal');
+    const deleteCancelButton = document.getElementById('delete-cancel-button');
+    const deleteModalButtons = document.getElementsByClassName('delete-modal-button');
+
+
+
+    for (const button of deleteModalButtons) {
+        button.addEventListener('click', () => {
+            modal.classList.add('is-active');
+            deleteForm.action = button.dataset.deleteurl;
+        });
+    }
+
+    deleteCancelButton.addEventListener('click', () => {
+        modal.classList.remove('is-active');
+    });
+</script>
+{% endblock %}
+
