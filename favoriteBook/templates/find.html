@@ -1,37 +1,75 @@
 {% extends 'base.html' %}
+{% load boost %}
+
+{% block title %}
+<title>{{title}}</title>
+{% endblock title %}
 
 {% block header %}
-<div class="alert alert-secondary" role="alert">
-    <p>you can find book by tag!</p>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">お気に入りの一冊を見つけましょう！</h1>
+        <p class="lead">タグをクリックして探す/キーワードでタグを絞り込む</p>
+    </div>
 </div>
+
+<div class="alert alert-light" role="alert">
+    <h1>検索</h1>
+</div>
+<div class="alert alert-secondary" role="alert">
+    <p>現在以下のようなタグで絞り込めます</p>
+    <form method="POST">{% csrf_token %}
+        {% for item in selecttags %}
+        {{item}}
+        <input type="checkbox" name="chekcs[]" value="{{item}}" />
+        {% endfor %}
+        <input type="submit" value="search">
+    </form>
+</div>
+
+
 {% endblock header %}
 
 {% block additionalFunc %}
-{% with item="" %}
-<table>
+<div class="alert alert-secondary" role="alert">
+    <p>キーワードを含むタグをもつ本を探しましょう！</p>
+    <p>下の検索窓にキーワードを入力してみてください</p>
     <form action="{% url 'find' %}" method="POST">
         {% csrf_token %}
         {{form}}
-        <tr><th></th><th><input type="submit" value="決定"></th></tr>
+        <input type="submit" value="serch">
     </form>
-</table>
-{% endwith %}
+</div>
+
+
+
+
 {% endblock additionalFunc %}
 
 <hr>
 
 {% block content %}
-{% for item in data %}
+{% if data == 0 %}
+<div class="alert alert-danger" role="alert">
+    <h3>マッチするタグがありませんでした。</h3>
+    <h3>他のタグを入力して試してください！</h3>
+</div>
+{% else %}
+
+{% for item,tag in data|zip:tags %}
+
 <div class="containe booklist list_number_{{item.pk}}">
     <div class="alert alert-primary" role="alert">
         <p>{{item.author}}</p>
         <p>{{item.bookTitle}}</p>
-        <p><img src="{{item.bookImage.url}}" alt="image" width="200" height="250"></p>
-        <!--        <p>{{item.content}}</p>-->
-        <!--        <p><a href="{{item.bookLink}}">{{item.LinkTitle}}</a></p>-->
-        <p>タグ：{{item.genre}}</p>
-        <p><a href="{% url 'detail' item.pk %}">詳細へ</a></p>
+        <p><img  class="image-size" src="{{item.bookImage.url}}" alt="image" width="200" height="250"></p>
+        <p class="tag-position">タグ：
+            {% for item in tag %}
+            <a href="{% url 'find' %}">{{item}}</a>,
+            {% endfor %}
+        </p>        <p><a href="{% url 'detail' item.pk %}">詳細へ</a></p>
     </div>
 </div>
 {% endfor %}
+{% endif %}
 {% endblock content %}

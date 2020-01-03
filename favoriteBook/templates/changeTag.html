@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-<title>新規投稿</title>
+<title>タグ変更</title>
 {% endblock title %}
 
 {%block header%}
@@ -14,22 +14,31 @@
 
 
 <div class="alert alert-light" role="alert">
-    <h1>新規投稿</h1>
+    <h1>タグ変更</h1>
 </div>
 {%endblock header%}
 
 {% block content %}
+
+<div class="alert alert-secondary container" role="alert">
+    <p>現在設定されているタグ　　   ※変更したいタグを空欄にし、新しいタグに入力するとタグが追加されます</p>
+    <hr>
+        <p>
+            {% for tag in tags%}
+            ・{{tag}}　　
+            {% endfor %}
+        </p>
+</div>
+
+
 <div  class="container">
-    <form action="" method="POST" enctype="multipart/form-data">
+    <form action="" method="POST">
         {% csrf_token %}
-        <p>本のタイトル：<input type="text" name="bookTitle"></p>
-        <p>内容: <input type="text" name="content"></p>
-        <p>イメージ: <input type="file" name="bookImage"></p>
-        <p>ジャンル： <input type="text" name="genre">*複数個入力するときはスペースを開けてください</p>
-        <input type="hidden" name="author" value="{{user.username}}">
-        <hr>
+        {{form}}
         <input type="submit" value="決定！">
     </form>
     <hr>
 </div>
+
+
 {% endblock content %}

@@ -1,9 +1,21 @@
 {% extends 'base.html' %}
 
+{% block title %}
+<title>{{object.bookTitle}}の詳細</title>
+{% endblock title %}
+
 {%block header%}
 
-<div class="alert alert-primary" role="alert">
-    {{object.author}}さんによる[{{object.bookTitle}}]の紹介ページです。
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">{{object.author}}さんの</h1>
+        <h1>[{{object.bookTitle}}]の紹介ページです</h1>
+        <p>評価やコメントをしましょう！</p>
+    </div>
+</div>
+
+<div class="alert alert-light" role="alert">
+    <h1>{{ object.bookTitle}}の詳細</h1>
 </div>
 {%endblock header%}
 <hr>
@@ -15,14 +27,13 @@
         <p>{{object.bookTitle}}</p>
         <p><img src="{{object.bookImage.url}}" alt="image" width="200"></p>
         <p>{{object.content}}</p>
-        <a href="#">タグ変更　</a>/<a href="#">　タグ追加</a>：
+        <a href="{% url 'changeTag' object.pk %}">タグ変更/タグ追加</a>：
         <p>{{object.genre}}</p>
     </div>
     <a href="{% url 'good' object.pk %}" class="btn btn-primary" role="button" aria-pressed="true">高評価x{{object.good}}</a>
     <a href="{% url 'notGood' object.pk %}" class="btn btn-danger" role="button" aria-pressed="true">低評価x{{object.notGood}}</a>
     {% if　not user.is_authenticated %}
-        <p>評価するためには <a href="{% url 'login' %}">ログイン</a> が必要です</p>
-        <p>今、評価ボタンを押すとログイン画面に移動します</p>
+        <p>※評価するためには <a href="{% url 'login' %}">ログイン</a> が必要です。現在、評価ボタンを押すとログイン画面に移動します。</p>
     {% endif%}
 </div>
 
@@ -50,7 +61,7 @@
 {% if sort %}
 {% for comment in object.comment_set.all reversed %}
 <div class="alert-secondary container" role="alert">
-    <p>投稿日:{{comment.created_at}}</p>
+    <p>投稿日時:{{comment.created_at}}</p>
     <h5>ハンドルネーム：{{comment.handlename}}</h5>
     <p>コメント：{{comment.content}}</p>
 </div>
