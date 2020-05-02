@@ -4,6 +4,7 @@ from django.conf import settings
 # from .views import signupfunc, homefunc, detailfunc, loginfunc,logoutfunc, dataCreate,findfunc , goodfunc, notGoodfunc
 from . import views
 urlpatterns = [
+    path("", views.signupfunc, name="signup"),
     path("signup/", views.signupfunc, name="signup"),
     path('login/', views.loginfunc, name="login"),
     path('home/', views.homefunc, name="home"),

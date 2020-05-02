@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_boost',
     'book',
+    "favoriteBook",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
