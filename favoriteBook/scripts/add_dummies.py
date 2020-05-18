@@ -62,3 +62,4 @@ def run():
                               bookImage=imgfile
                               )
         dummy.save()
+	print("データ生成に成功しました")
