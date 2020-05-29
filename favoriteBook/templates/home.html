@@ -31,7 +31,6 @@
         <p><a href="#">{{object.author}}</a></p>
         <p>{{object.bookTitle}}</p>
         <p><img class="image-size" src="{{object.bookImage.url}}" alt="image"</p>
-        <p>{{object.bookImage.url}}</p>
         <p class="tag-position">タグ：
             {% for item in tag %}
             <a href="{% url 'find' %}">{{item}}</a>,
