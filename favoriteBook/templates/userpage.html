@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load boost %}
+
+{% block title %}
+<title>user</title>
+{% endblock title %}
+
+
+
+{%block header%}
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">{{target}}さんが投稿した本の一覧です</h1>
+    </div>
+</div>
+
+<div class="alert alert-light" role="alert">
+    <h1>{{target}}さんのページ</h1>
+</div>
+{%endblock header%}
+
+
+{% block content %}
+{% for object,tag in object_list|zip:tags %}
+<div class="container booklist">
+    <div class="alert alert-primary" role="alert">
+        <p>{{object.author}}</p>
+        <p>{{object.bookTitle}}</p>
+        <p><img  class="image-size" src="{{object.bookImage.url}}" alt="image"></p>
+        <p>タグ：
+
+            {% for item in tag %}
+                <a href="#">{{item}}</a>
+                {% endfor %}
+
+        </p>
+        <p><a href="{% url 'detail' object.pk %}">詳細へ</a></p>
+        <a href="#" class="btn btn-primary  " role="button" aria-pressed="true">高評価x{{object.good}}</a>
+        <a href="#" class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true" >低評価x{{object.notGood}} </a>
+
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
+
