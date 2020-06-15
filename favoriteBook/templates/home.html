@@ -28,8 +28,8 @@
 
 <div class="container booklist list_number_{{item.pk}}">
     <div class="alert alert-primary" role="alert">
-        <p><a href="#">{{object.author}}</a></p>
-        <p>{{object.bookTitle}}</p>
+        <p>投稿者名：<a href="{% url 'userposts' object.author %}">{{object.author}}</a></p>
+        <p>タイトル：{{object.bookTitle}}</p>
         <p><img class="image-size" src="{{object.bookImage.url}}" alt="image"</p>
         <p class="tag-position">タグ：
             {% for item in tag %}
