@@ -194,34 +194,34 @@ def notGoodfunc(request, pk):
 @login_required
 def mypagefunc(request):
     user = request.user
-#     print(RecommendedBook.objects)
     object_list = RecommendedBook.objects.filter(author=user)
-    tags=[]
-    for object in object_list:
-            object_item=[]
-            taglong=""
-            items = object.genre.split()
-#             print("items",items)
-            for item in items:
-                taglong+=item
-                object_item.append(item)
-                if len(taglong)>15:
-                    if len(taglong)>20:
-                        over_item=object_item.pop()
-                        over_str = len(taglong)-20
-#                         print(over_str)
-#                         print("over",over_item[0:len(over_item)-over_str])
-                        object_item.append(over_item[0:len(over_item)-over_str]+"...")
-                    else:
-                        object_item.append("...")
-                    break
-            tags.append(object_item)
+    tags=create_tags(object_list)
     params={
     "object_list":object_list ,
      "tags":tags,
      "title":"mypage",
      }
     return render(request, 'mypage.html',params)
+
+def create_tags(object_list):
+    tags=[]
+    for object in object_list:
+        object_item=[]
+        taglong=""
+        items = object.genre.split()
+        for item in items:
+            taglong+=item
+            object_item.append(item)
+            if len(taglong)>15:
+                if len(taglong)>20:
+                    over_item=object_item.pop()
+                    over_str = len(taglong)-20
+                    object_item.append(over_item[0:len(over_item)-over_str]+"...")
+                else:
+                    object_item.append("...")
+                break
+            tags.append(object_item)
+    return tags    
 
 
 
@@ -254,11 +254,19 @@ class dataDelete(DeleteView):
     success_url=reverse_lazy('mypage')
 
 def userPostsfunc(request, targetUser):
-    
+    object_list = RecommendedBook.objects.filter(author=targetUser)
+    # print(data)
+    tags = create_tags(object_list)
     params={
-    "object_list": "ここはuserpage",
+    "object_list":object_list ,
+    "tags":tags,
      "title":"mypage",
      "target":targetUser,
      }
+    
+    if(targetUser==request.user):
+        return redirect(to="mypage")
+        #  return (request, "mypage.html", params)
+
     return render(request, 'userpage.html',params)
 
