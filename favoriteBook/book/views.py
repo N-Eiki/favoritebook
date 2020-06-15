@@ -253,11 +253,12 @@ class dataDelete(DeleteView):
     model=RecommendedBook
     success_url=reverse_lazy('mypage')
 
-def userPostsfunc(request):
+def userPostsfunc(request, targetUser):
     
     params={
     "object_list": "ここはuserpage",
      "title":"mypage",
+     "target":targetUser,
      }
     return render(request, 'userpage.html',params)
 
