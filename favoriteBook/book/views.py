@@ -252,3 +252,12 @@ def changeTagfunc(request, pk):
 class dataDelete(DeleteView):
     model=RecommendedBook
     success_url=reverse_lazy('mypage')
+
+def userPostsfunc(request):
+    
+    params={
+    "object_list": "ここはuserpage",
+     "title":"mypage",
+     }
+    return render(request, 'userpage.html',params)
+

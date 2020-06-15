@@ -17,6 +17,7 @@ urlpatterns = [
     path('mypage/', views.mypagefunc, name="mypage"),
     path('delete/<int:pk>', views.dataDelete.as_view(), name="delete"),
     path("changeTag/<int:pk>", views.changeTagfunc, name="changeTag"),
+    path('user/', views.userPostsfunc, name="userposts"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
