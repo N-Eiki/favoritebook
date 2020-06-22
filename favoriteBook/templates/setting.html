@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load boost %}
+
+{% block title %}
+<title>user</title>
+{% endblock title %}
+
+
+
+{%block header%}
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">ここで設定を変更することができます</h1>
+    </div>
+</div>
+
+<div class="alert alert-light" role="alert">
+</div>
+{%endblock header%}
+
+
+{% block content %}
+<div  class="container">
+    <form action="" method="POST">
+        {% csrf_token %}
+        <p>ユーザ名: <input type="text" name="username" value={{user.username}}></p>
+        <p>パスワード: <input type="text" name="password"></p>
+        <p>メールアドレス: <input type="text" name="mail"></p>
+        <hr>
+        <input type="submit" value="更新">
+    </form>
+    <hr>
+</div>
+{% endblock %}
+

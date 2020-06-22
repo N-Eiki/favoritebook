@@ -16,12 +16,13 @@ from django.db.models import Q
 def signupfunc(request):
     if request.method=="POST":
         username=request.POST['username']
+        email   =request.POST['email']
         password=request.POST['password']
         try:
             User.objects.get(username=username)
             return render(request, "signup.html",{"error":"this user is already registered","error2":"please register another name"})
         except:
-            user = User.objects.create_user(username, "", password)
+            user = User.objects.create_user(username, email, password)
             return redirect(to="login")
 #             return render(request,"signup.html",{'title':'signup'})
     return render(request, "signup.html", {'title':"signup"})
@@ -30,8 +31,9 @@ def signupfunc(request):
 def loginfunc(request):
     if request.method=="POST":
         username = request.POST['username']
+        email   =request.POST['email']
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=username, email=email,password=password)
         if user is not None:
             login(request, user)
             return redirect(to="home")
@@ -269,4 +271,10 @@ def userPostsfunc(request, targetUser):
         #  return (request, "mypage.html", params)
 
     return render(request, 'userpage.html',params)
+
+def settingfunc(request):
+    params = {
+        "mail":request.user,
+    }
+    return render(request, "setting.html", params)
 
