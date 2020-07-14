@@ -1,7 +1,7 @@
 
 
 """
-py manage.py runscripts add_dummies.py
+py manage.py runscript add_dummies
 
 """
 
@@ -62,4 +62,4 @@ def run():
                               bookImage=imgfile
                               )
         dummy.save()
-	print("データ生成に成功しました")
+	# print("データ生成に成功しました")
